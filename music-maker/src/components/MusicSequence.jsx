@@ -1,27 +1,31 @@
-import { ChordBlock } from './ChordBlock';
+import React, { Component } from 'react';
 import { SequenceMember } from './SequenceMember';
-
-// Pixel distance of a whole measure
-const MEASURE_DISTANCE = 800;
+import './MusicSequence.css';
 
 class MusicSequence extends Component {
     constructor(props) {
-        super(props)
+        super(props);
+        this.state = {};
     }
 
     render() {
         return (
-        <div class="musical-staff">
-            { this.renderNotes() }
-            { this.renderChords() }
+        <div className="musical-staff">
+            <div className="note-container">
+                { this.renderSequence(this.props.notes) }
+            </div>
+            <div className="chord-container">
+                { this.renderSequence(this.props.chords) }
+            </div>
         </div>);
     }
 
     // Render notes
     renderSequence(sequence) {
+        let self = this;
         let sequenceMembers = [];
         sequence.forEach(function (member, index) {
-            sequenceMembers.push(this.renderSequenceMember(member, index));
+            sequenceMembers.push(self.renderSequenceMember(member, index));
         });
 
         return sequenceMembers;
@@ -29,11 +33,11 @@ class MusicSequence extends Component {
 
     // Render an individual note or chord
     renderSequenceMember(member, index) {
-        // Calculate position based on index in the sequence
-        let leftPos = MEASURE_DISTANCE * member.duration + "px";
-
+        if (member === null) {
+            return <SequenceMember name = "" type = "rest" />
+        }
         return (
-            <SequenceMember name = {member.name} style = { { left: leftPos } } type = { member.type } />
+            <SequenceMember name = {member.name} type = { member.type } />
         );
     }
 }

@@ -1,12 +1,13 @@
 class Note {
     constructor(note, octave) {
-        this.note = note;
+        this.name = note;
         this.octave = octave;
+        this.type = "note";
     }
 
     // Get the note number (from 1 to 88) for this note
     get globalNote() {
-        return (octave - 1) * 12 + this.noteToNumber();
+        return (this.octave - 1) * 12 + this.noteToNumber();
     }
 
     noteToNumber() {

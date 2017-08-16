@@ -1,3 +1,4 @@
+import React, { Component } from 'react';
 
 class SequenceMember extends Component {
     constructor(props) {
@@ -7,7 +8,17 @@ class SequenceMember extends Component {
 
     render() {
         let className = "";
-        this.props.type === "chord" ? className = "chord-block" : className = "note-block";
+        switch (this.props.type) {
+            case "chord" :
+                className = "chord-block";
+                break;
+            case "note" :
+                className = "note-block";
+                break;
+            case "rest" :
+                className = "rest";
+                break;
+        }
 
         return (
         <div className={ className }>

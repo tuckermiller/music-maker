@@ -14,6 +14,7 @@ class SequenceMember extends Component {
                 break;
             case "note" :
                 className = "note-block";
+                if (this.props.isCurrentNote) className += " current";
                 break;
             case "rest" :
                 className = "rest";

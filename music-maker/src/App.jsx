@@ -35,6 +35,9 @@ class App extends Component {
 
     playNote() {
         let currentNote = this.state.noteSequence[this.state.currentSequenceIndex];
+        
+        if (currentNote === null) return;
+
         this.melody.rate(Math.pow(1.0594636, (this.notes.indexOf(currentNote.name) - 3)));
         this.melody.play();
     }

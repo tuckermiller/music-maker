@@ -17,7 +17,6 @@ class NoteButtons extends Component {
         let noteButtons = notes.map(function(note, index) {
             return (
                 <button key = { note } onClick = { () => {
-                    console.log();
                     self.melody.rate(Math.pow(1.0594636, (index - 3)));
                     self.melody.play();
                     self.props.onNoteClick(new Note(note, 4))
@@ -31,6 +30,11 @@ class NoteButtons extends Component {
         return (
         <div className = "note-button-container" >
             { noteButtons }
+            <button key = "rest" onClick = { () => {
+                self.props.onNoteClick(null)
+                } } >
+                <SequenceMember name="" type = "rest" />
+            </button>
         </div >
         );
     }

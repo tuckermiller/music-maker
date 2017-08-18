@@ -33,7 +33,7 @@ class MusicSequence extends Component {
 
     // Render an individual note or chord
     renderSequenceMember(member, index) {
-        let isCurrentNote = this.props.currentSequenceIndex === index && member.type === "note";
+        let isCurrentNote = this.props.currentSequenceIndex === index;
 
         if (member === null) {
             return <SequenceMember name = "" type = "rest" />

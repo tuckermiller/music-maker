@@ -14,8 +14,9 @@ class App extends Component {
 
         let notes = [];
         let chords = [];
-        let cmaj = new Chord('cmaj', [new Note('c', 4), new Note('e', 4), new Note('g', 4)])
-        chords.push(cmaj);
+        let cmaj = new Chord('cmaj', [new Note('c', 4), new Note('e', 4), new Note('g', 4)]);
+        let dmin = new Chord('dmin', [new Note('d', 4), new Note('f', 4), new Note('a', 4)]);
+        chords.push(cmaj, dmin, cmaj, dmin);
 
         this.state = {
             noteSequence: notes,
@@ -26,20 +27,45 @@ class App extends Component {
         };
     }
 
-    // Middle c piano sample
+    // Melody
     melody = new Howl({
+        src: ['/p_middlec.ogg']
+    });
+
+    // Three chord members
+    chordMember1 = new Howl({
+        src: ['/p_middlec.ogg']
+    });
+
+    chordMember2 = new Howl({
+        src: ['/p_middlec.ogg']
+    });
+
+    chordMember3 = new Howl({
         src: ['/p_middlec.ogg']
     });
 
     notes = ['a', 'a#', 'b', 'c', 'c#', 'd', 'd#', 'e', 'f', 'f#', 'g', 'g#'];
 
     playNote() {
-        let currentNote = this.state.noteSequence[this.state.currentSequenceIndex];
-        
-        if (currentNote === null) return;
+        // Play melody
+        let currentNote = this.state.noteSequence[this.state.currentSequenceIndex];  
+        if (currentNote != null) {
+            this.melody.rate(Math.pow(1.0594636, (this.notes.indexOf(currentNote.name) - 3)));
+            this.melody.play();
+        }
 
-        this.melody.rate(Math.pow(1.0594636, (this.notes.indexOf(currentNote.name) - 3)));
-        this.melody.play();
+        // Play chord
+        let currentChord = this.state.chordSequence[this.state.currentSequenceIndex];
+        if (currentChord != null) {
+            this.chordMember1.rate(Math.pow(1.0594636, (this.notes.indexOf(currentChord.notes[0].name) - 3)));
+            this.chordMember2.rate(Math.pow(1.0594636, (this.notes.indexOf(currentChord.notes[1].name) - 3)));
+            this.chordMember3.rate(Math.pow(1.0594636, (this.notes.indexOf(currentChord.notes[2].name) - 3)));
+
+            this.chordMember1.play();
+            this.chordMember2.play();
+            this.chordMember3.play();        
+        }
     }
 
     addNoteToSequence(note) {

@@ -2,26 +2,20 @@ import React, { Component } from 'react';
 import { Howl } from 'howler';
 
 import { NoteButtons } from './components/NoteButtons.jsx';
+import { ChordButtons } from './components/ChordButtons.jsx';
 import { MusicSequence } from './components/MusicSequence.jsx';
 import { Note } from './models/Note.js';
 import { Chord } from './models/Chord.js';
-import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {
     constructor(props) {
         super(props);
 
-        let notes = [];
-        let chords = [];
-        let cmaj = new Chord('cmaj', [new Note('c', 4), new Note('e', 4), new Note('g', 4)]);
-        let dmin = new Chord('dmin', [new Note('d', 4), new Note('f', 4), new Note('a', 4)]);
-        chords.push(cmaj, dmin, cmaj, dmin);
-
         this.state = {
-            noteSequence: notes,
+            noteSequence: [],
             currentSequenceIndex: null,
-            chordSequence: chords,
+            chordSequence: [],
             bpm: 120,
             mode: "create"
         };
@@ -45,32 +39,41 @@ class App extends Component {
         src: ['/p_middlec.ogg']
     });
 
-    notes = ['a', 'a#', 'b', 'c', 'c#', 'd', 'd#', 'e', 'f', 'f#', 'g', 'g#'];
-
-    playNote() {
+    play() {
         // Play melody
-        let currentNote = this.state.noteSequence[this.state.currentSequenceIndex];  
-        if (currentNote != null) {
-            this.melody.rate(Math.pow(1.0594636, (this.notes.indexOf(currentNote.name) - 3)));
-            this.melody.play();
+        if (this.state.noteSequence != null) {
+            let currentNote = this.state.noteSequence[this.state.currentSequenceIndex];  
+            if (currentNote != null) {
+                this.melody.rate(Math.pow(1.0594636, (currentNote.globalNote - 40)));
+                this.melody.play();
+            }
         }
 
         // Play chord
-        let currentChord = this.state.chordSequence[this.state.currentSequenceIndex];
-        if (currentChord != null) {
-            this.chordMember1.rate(Math.pow(1.0594636, (this.notes.indexOf(currentChord.notes[0].name) - 3)));
-            this.chordMember2.rate(Math.pow(1.0594636, (this.notes.indexOf(currentChord.notes[1].name) - 3)));
-            this.chordMember3.rate(Math.pow(1.0594636, (this.notes.indexOf(currentChord.notes[2].name) - 3)));
+        if (this.state.chordSequence != null) {
+            let currentChord = this.state.chordSequence[this.state.currentSequenceIndex];
+            if (currentChord != null) {
+                this.chordMember1.rate(Math.pow(1.0594636, (currentChord.notes[0].globalNote - 40)));
+                this.chordMember2.rate(Math.pow(1.0594636, (currentChord.notes[1].globalNote - 40)));
+                this.chordMember3.rate(Math.pow(1.0594636, (currentChord.notes[2].globalNote - 40)));
 
-            this.chordMember1.play();
-            this.chordMember2.play();
-            this.chordMember3.play();        
+                this.chordMember1.play();
+                this.chordMember2.play();
+                this.chordMember3.play();        
+            }
         }
     }
 
     addNoteToSequence(note) {
         this.setState((prevState) => {
             prevState.noteSequence.push(note);
+            return prevState;
+        });
+    }
+
+    addChordToSequence(chord) {
+        this.setState((prevState) => {
+            prevState.chordSequence.push(chord, null, null, null);
             return prevState;
         });
     }
@@ -87,7 +90,7 @@ class App extends Component {
                 return prevState;
             });
 
-            this.playNote();
+            this.play();
         } else if (this.state.currentSequenceIndex >= this.state.noteSequence.length - 1) {
             // Sequence is over
             this.setState((prevState) => {
@@ -100,17 +103,25 @@ class App extends Component {
                 prevState.currentSequenceIndex++;
                 return prevState;
             });
-            this.playNote();
+            this.play();
         }
     }
 
     render() {
 
         return (
-        <div className = "App" >
-            <NoteButtons onNoteClick = { this.addNoteToSequence.bind(this) } />
-            <button onClick={ () => { this.playSequence(); } }>Play</button>
-            <MusicSequence currentSequenceIndex = { this.state.currentSequenceIndex } notes = { this.state.noteSequence } chords = { this.state.chordSequence }/>
+        <div className = "app" >
+            <div className = "title">
+                Music Maker
+            </div>
+            <div className = "music-controls">
+                <NoteButtons onNoteClick = { this.addNoteToSequence.bind(this) } />
+                <ChordButtons onChordClick = { this.addChordToSequence.bind(this) } />
+                <button onClick={ () => { this.playSequence(); } }>Play</button>
+            </div>
+            <div className = "music-sequence">
+                <MusicSequence currentSequenceIndex = { this.state.currentSequenceIndex } notes = { this.state.noteSequence } chords = { this.state.chordSequence }/>
+            </div>
         </div >
         );
     }

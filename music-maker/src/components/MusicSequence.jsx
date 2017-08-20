@@ -22,6 +22,8 @@ class MusicSequence extends Component {
 
     // Render notes
     renderSequence(sequence) {
+        if (sequence == null) return null;
+        
         let self = this;
         let sequenceMembers = [];
         sequence.forEach(function (member, index) {
